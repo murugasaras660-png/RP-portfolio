@@ -37,7 +37,7 @@ export default function Hero() {
     
     const onScroll = (e) => {
       if (textRingRef.current) {
-        textRingRef.current.style.transform = `rotate(${e.animatedScroll * 0.12}deg)`;
+        textRingRef.current.style.transform = `rotate(${e.animatedScroll * 0.12}deg) translateZ(0)`;
       }
     };
     
@@ -52,20 +52,7 @@ export default function Hero() {
       {/* Peach/Orange radial wash */}
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_70%_30%,var(--color-bg-wash)_0%,transparent_50%)]" aria-hidden="true" />
       
-      {/* Scroll Cue Pill */}
-      <div className="absolute left-8 top-1/2 -translate-y-1/2 w-8 h-32 rounded-full bg-[var(--color-line)] hidden md:flex justify-center py-2 cursor-pointer" onClick={() => {
-        const about = document.getElementById('about');
-        if (about) {
-          if (lenis) lenis.scrollTo(about, { duration: 1.2 });
-          else about.scrollIntoView({behavior: 'smooth'});
-        }
-      }}>
-        <motion.div 
-          className="w-4 h-4 rounded-full bg-accent shadow-lg"
-          animate={{ y: [0, 80, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+
 
       <div className="container h-full flex items-center relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
@@ -134,7 +121,7 @@ export default function Hero() {
             
             {/* Text Ring */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] z-0 opacity-40">
-              <svg viewBox="0 0 400 400" className="w-full h-full" ref={textRingRef}>
+              <svg viewBox="0 0 400 400" className="w-full h-full will-change-transform" ref={textRingRef}>
                 <path id="curve" d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0" fill="transparent" />
                 <text className="text-[13px] font-medium tracking-[0.3em] uppercase" fill="var(--color-ink)" opacity="0.6">
                   <textPath href="#curve" startOffset="0%">

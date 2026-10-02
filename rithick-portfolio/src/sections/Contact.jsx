@@ -22,7 +22,7 @@ const SocialCard = ({ href, name, iconName, index, centerIndex, scrollYProgress 
         href={linkHref}
         target={isExternal ? "_blank" : "_self"}
         rel={isExternal ? "noopener noreferrer" : ""}
-        className="inline-flex flex-col items-center justify-center gap-2 w-24 h-28 md:w-28 md:h-32 rounded-2xl border border-[var(--color-line)] bg-[var(--color-surface)] shadow-lg hover:shadow-[0_10px_30px_rgba(244,86,14,0.15)] transition-all duration-300 group cursor-pointer relative overflow-hidden hover:border-[var(--color-accent)] hover:-translate-y-2 hover:scale-105 block"
+        className="inline-flex flex-col items-center justify-center gap-2 w-24 h-28 md:w-28 md:h-32 rounded-2xl border border-[var(--color-line)] bg-[var(--color-surface)] shadow-lg hover:shadow-[0_10px_30px_rgba(244,86,14,0.15)] transition-[transform,box-shadow,border-color,opacity] duration-300 group cursor-pointer relative overflow-hidden hover:border-[var(--color-accent)] hover:-translate-y-2 hover:scale-105 block"
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-accent)] to-transparent opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
         <div className="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 relative z-10 text-[var(--color-ink)] group-hover:text-accent">

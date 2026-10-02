@@ -2,19 +2,23 @@ import { useState, useEffect, memo } from 'react';
 
 const SPLINE_SCENE = 'https://prod.spline.design/QElcHUOKPtrzCYDl/scene.splinecode';
 
-function SplineBackgroundInner() {
+function SplineBackgroundInner({ isReady }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Dynamically load the spline-viewer script
+    if (!isReady) return; // Wait for initial app loading/transition phase to finish
+
+    // Dynamically load the spline-viewer script asynchronously
     const script = document.createElement('script');
     script.type = 'module';
+    script.async = true; // Never block main thread
     script.src = 'https://cdn.spline.design/@splinetool/viewer@2.0.65/build/spline-viewer.js';
     
     // We can listen to the load event of the script or the viewer itself.
     // For simplicity, we'll just fade it in slightly after the script loads.
     script.onload = () => {
-      setTimeout(() => setLoaded(true), 500);
+      // Small delay to ensure the web component has initialized and compiled its shaders
+      setTimeout(() => setLoaded(true), 1500);
     };
     
     document.head.appendChild(script);
@@ -24,7 +28,7 @@ function SplineBackgroundInner() {
         document.head.removeChild(script);
       }
     };
-  }, []);
+  }, [isReady]);
 
   return (
     <div

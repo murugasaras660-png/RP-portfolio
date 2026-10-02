@@ -1,14 +1,16 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
-import Home from './pages/Home';
-import ProjectDetail from './pages/ProjectDetail';
-import NotFound from './pages/NotFound';
+import { useEffect, useState, useCallback, Suspense, lazy } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './sections/Footer';
 import { LenisProvider } from './motion/lenis';
 import { BackgroundLine } from './components/BackgroundLine';
 import { RPLoader } from './components/RPLoader';
 import { SplineBackground } from './components/SplineBackground';
+
+// Lazy load routes to reduce initial bundle size and JS execution
+const Home = lazy(() => import('./pages/Home'));
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   const location = useLocation();
@@ -49,8 +51,8 @@ export default function App() {
         <div style={{ opacity: phase === 'ready' ? 1 : 0, transition: 'opacity 0.5s ease' }}>
           <a href="#main-content" className="skip-link">Skip to content</a>
           
-          {/* Spline 3D Background — deepest layer */}
-          <SplineBackground />
+          {/* Spline 3D Background — deepest layer. Pass isReady to delay WebGL init */}
+          <SplineBackground isReady={phase === 'ready'} />
 
           {/* Scroll Path Line */}
           <div className="fixed inset-0 z-[1] pointer-events-none opacity-20">
@@ -61,11 +63,13 @@ export default function App() {
           <div className="content-layer relative z-[2]">
             <Navbar showBrand={phase === 'ready'} />
             <main id="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/projects/:slug" element={<ProjectDetail />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Suspense fallback={<div className="h-screen w-full" />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/projects/:slug" element={<ProjectDetail />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </main>
             <Footer />
           </div>

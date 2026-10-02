@@ -39,10 +39,10 @@ export default function Navbar({ showBrand = true }) {
       if (!nav) return;
 
       if (current > lastScrollY.current && current > 100) {
-        nav.style.transform = 'translate(-50%, -150%)';
+        nav.style.transform = 'translate3d(-50%, -150%, 0)';
         nav.style.opacity = '0';
       } else {
-        nav.style.transform = 'translate(-50%, 0%)';
+        nav.style.transform = 'translate3d(-50%, 0%, 0)';
         nav.style.opacity = '1';
       }
 

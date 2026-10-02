@@ -135,6 +135,40 @@ img, video {
   height: auto;
 }
 
+/* ─── 60fps GPU Performance Layer ─── */
+/* Force GPU compositing on all animated elements */
+[style*="transform"],
+.will-change-transform {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Contain layout recalculations to each section */
+section[id] {
+  contain: content;
+}
+
+/* Prevent blur from killing potato GPUs — use smaller blur radius on low-end */
+@media (max-resolution: 1dppx) {
+  .blur-3xl { filter: blur(24px) !important; }
+  .blur-\\[120px\\] { filter: blur(40px) !important; }
+}
+
+/* Float animation for icons — pure CSS, no JS overhead */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(-6px) translateZ(0); }
+}
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-float-slow {
+  animation: float-gentle 5s ease-in-out infinite;
+  will-change: transform;
+}
+
 a {
   color: inherit;
   text-decoration: none;

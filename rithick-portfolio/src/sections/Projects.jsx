@@ -11,6 +11,7 @@ export default function Projects() {
   const containerRef = useRef(null);
   const deckRef = useRef(null);
   const cardsRef = useRef([]);
+  const lastIdxRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Desktop Scroll Logic
@@ -25,63 +26,54 @@ export default function Projects() {
     const cards = cardsRef.current;
     const total = cards.length;
     
-    // PERFECT MATH:
-    // We want 40vh of scroll distance per card transition to make it fast.
-    // Total transitions = total - 1.
-    // So total scroll distance = (total - 1) * 40vh.
-    // To allow this scroll while sticking, container height = 100vh + total scroll distance.
     const scrollPerCard = window.innerHeight * 0.4;
+    const winW = window.innerWidth; // Cache to avoid forced reflow
     container.style.height = `calc(100vh + ${(total - 1) * 40}vh)`;
 
     const onScroll = () => {
-      if (window.innerWidth < 640) return; // Failsafe for resize
-      
       const rect = container.getBoundingClientRect();
-      
-      // Progress goes exactly from 0 to (total - 1)
       const progress = Math.max(0, -rect.top / scrollPerCard);
       
+      // Only trigger React re-render when index actually changes
       const idx = Math.max(0, Math.min(total - 1, Math.round(progress)));
-      setActiveIndex(idx);
+      if (idx !== lastIdxRef.current) {
+        lastIdxRef.current = idx;
+        setActiveIndex(idx);
+      }
 
-      cards.forEach((card, i) => {
-        if (!card) return;
+      for (let i = 0; i < total; i++) {
+        const card = cards[i];
+        if (!card) continue;
         
-        // Continuous difference from current scroll position
         const diff = i - progress;
-        
-        card.style.transition = 'none';
+        const s = card.style;
         
         if (diff <= 0) {
-          // Flinging away (past cards) - as diff goes from 0 to -1
           const flingProgress = Math.max(-1, diff); 
-          const x = flingProgress * window.innerWidth * 0.8;
+          const x = flingProgress * winW * 0.8;
           const rotate = flingProgress * 15;
           const opacity = 1 + flingProgress;
           
-          card.style.transform = `translateX(${x}px) translateY(0px) scale(1) rotate(${rotate}deg)`;
-          card.style.opacity = Math.max(0, opacity).toString();
-          card.style.zIndex = `${20 + i}`;
-          card.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+          s.transform = `translate3d(${x}px,0,0) rotate(${rotate}deg)`;
+          s.opacity = Math.max(0, opacity);
+          s.zIndex = 20 + i;
+          s.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
         } else {
-          // Cards underneath (upcoming) - as diff goes from 1 to 0
           const y = diff * 40;
           const scale = Math.max(0.8, 1 - diff * 0.04);
-          const rotateX = diff * 4;
           const opacity = Math.max(0, 1 - diff * 0.2);
           
-          card.style.transform = `translateX(0px) translateY(${y}px) scale(${scale}) rotateX(${rotateX}deg)`;
-          card.style.opacity = opacity.toString();
-          card.style.zIndex = `${20 - i}`;
-          card.style.pointerEvents = diff < 0.5 ? 'auto' : 'none';
+          s.transform = `translate3d(0,${y}px,0) scale(${scale})`;
+          s.opacity = opacity;
+          s.zIndex = 20 - i;
+          s.pointerEvents = diff < 0.5 ? 'auto' : 'none';
         }
-      });
+      }
     };
 
     lenis.on('scroll', onScroll);
-    onScroll(); // initial state
+    onScroll();
     
-    // Handle resize cleanly
     const onResize = () => {
       if (window.innerWidth < 640) {
         container.style.height = 'auto';
