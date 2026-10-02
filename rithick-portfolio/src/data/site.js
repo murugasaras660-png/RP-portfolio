@@ -1,0 +1,16 @@
+export const site = {
+  brand: 'RP.',
+  name: 'Rithick Prasath',
+  role: 'CSE Student • Developer',
+  headline: "Hi, I'm Rithick.",
+  lead: 'I craft digital experiences with a focus on clean design, performance, and user-centric architecture.',
+  description: 'A passionate developer building the future of the web.',
+  email: 'hello@rithickprasath.com',
+  github: 'https://github.com/dummy',
+  linkedin: 'https://linkedin.com/in/dummy',
+  instagram: 'https://instagram.com/dummy',
+  resumePath: '/resume.pdf',
+  statementText: 'I build. I learn. I ship.',
+  ringText: 'Rithick Prasath • CSE Student • Builder • Learner • ',
+  footerYear: new Date().getFullYear(),
+};
